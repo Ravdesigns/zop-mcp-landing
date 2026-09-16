@@ -1528,6 +1528,121 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
   backdrop-filter:blur(18px) saturate(150%);
 }
 @media (prefers-reduced-motion:reduce){.nav{transition:none}}
+
+
+/* ===========================================================================
+   CHROME TOKENS
+   The lifted CTA and footer resolve colour and timing through the names the
+   shipped site uses. Everything here is either already in this page under a
+   different name or read verbatim from the site's own :root, so nothing is
+   invented to make the components render.
+   =========================================================================== */
+:root{
+  --g-600:#525252;
+  --g-700:#2a2a2a;
+  --zop-white:#FFFFFF;
+  --dur-xs:240ms;
+  --dur-md:640ms;
+  --ease-in-out:cubic-bezier(.65, 0, .35, 1);
+}
+
+/* === CTA, lifted from the shipped homepage === */
+/* =================================================================
+   FINAL CTA, the one dark moment
+   ================================================================= */
+/* Final CTA · 'one dark moment', pinned to ink+paper hex tokens
+   regardless of theme, so the section is always the same controlled
+   high-contrast slab. var(--ink)/var(--paper) flip in dark mode and
+   would otherwise turn the body text dark-on-dark. */
+.final{background:#0F0F12;
+  color:#F0EBDB;
+  padding:96px 0;
+  border:0;
+  position:relative;}
+.final::before{content:none !important;}
+.final h2{color:#F0EBDB;}
+.final .final-tag{color:#F0EBDB;}
+.final p:not(.final-tag){color:#B8B0A0;}
+/* AA-safe body grey */
+.final-stats strong{color:#F0EBDB;}
+.final-stats div{color:#9C9588;}
+.final-stats{border-left:1px solid rgba(255,255,255,.18); padding-left:32px;}
+/* Mark sits inline above the stats column · never overlaps the headline. */
+.final-aside{display:flex; flex-direction:column; gap:32px;
+  border-left:1px solid rgba(255,255,255,.18); padding-left:32px;}
+.final-aside .final-stats{border-left:0; padding-left:0;}
+@media (max-width:760px){
+.final-aside{border-left:0; padding-left:0; border-top:1px solid rgba(255,255,255,.18); padding-top:24px; gap:24px;}
+}
+.final-eyebrow{font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--zop-orange); margin:0 0 18px;
+  display:inline-flex; align-items:center; gap:10px;}
+.final-eyebrow::before{content:''; width:10px; height:10px; background:var(--zop-orange);}
+.final-grid{display:grid; grid-template-columns:2fr 1fr; gap:60px; align-items:center}
+.final h2{font-size:clamp(36px,4vw,56px); font-weight:700; line-height:1; letter-spacing:-0.04em; margin-bottom:20px}
+.final p{font-size:16px; color:var(--g-600); max-width:460px; margin-bottom:28px}
+.final .final-cta{display:flex; gap:12px; flex-wrap:wrap}
+.final-stats{display:flex; flex-direction:column; gap:20px; font-family:var(--mono); font-size:12px;
+  border-left:1px solid rgba(255,255,255,.18); padding-left:28px}
+.final-stats div{color:#9C9588; letter-spacing:.05em}
+/* AA cream-grey, theme-locked */
+.final-stats strong{display:block; color:#F0EBDB; font-size:24px; letter-spacing:-0.02em; font-family:var(--font); font-weight:700; margin-bottom:4px}
+/* .final is theme-locked above (always #0F0F12 bg + cream type), so no
+   data-theme override needed here. */
+html[data-theme="dark"] .live-strip{background:#0F0F12}
+/* (Stock ticker has its own dark surface, no extra dark-mode overrides needed) */
+
+/* Final CTA over #0F0F12, bump body copy */
+html[data-theme="dark"] .final p{color:#B8B0A0}
+html[data-theme="dark"] .final-stats{border-left-color:rgba(255,255,255,.2)}
+html[data-theme="dark"] .final-stats div{color:#9C9588}
+.family, .pillars, .features, .stats, .cdcr, .deploy, .flow, .pricing, .cases,
+  .timeline, .regions, .calc, .trustpillars, .trust-row, .final-grid{grid-template-columns:1fr}
+/* Stats below the CTA buttons (overrides the aside-only flow) */
+  .final-stats.final-stats--inline{margin-top:32px;
+    border-left:0;
+    padding-left:0;
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:20px;}
+.final-stats.final-stats--inline > div{display:flex; flex-direction:column; gap:6px;
+    padding-top:16px;
+    border-top:1px solid rgba(240,235,219,.18);
+    font-size:13px; line-height:1.45;
+    color:rgba(240,235,219,.78);}
+.final-stats.final-stats--inline > div strong{font-family:var(--mono, ui-monospace, monospace);
+    font-size:18px; font-weight:600;
+    color:#F0EBDB;
+    letter-spacing:-.01em;}
+@media (max-width:780px){
+.final-stats.final-stats--inline{grid-template-columns:1fr;
+      gap:14px;}
+}
+/* TETRIS · transparent overlay; blocks fall from top of the .final
+     section to the bottom, occupying the right portion of the section.
+     No frame, no canvas background, flat brand-colored blocks only. */
+  .final{position:relative; overflow:hidden;}
+.final .final-aside{border-left:0; padding-left:0;
+    min-height:1px;}
+#tet-canvas{position:absolute;
+    top:0; right:0; bottom:0;
+    width:46%;
+    height:100%;
+    background:transparent;
+    image-rendering:pixelated;
+    pointer-events:none;
+    z-index:1;}
+@media (max-width:980px){
+#tet-canvas{width:38%; opacity:.35;}
+}
+@media (max-width:780px){
+#tet-canvas{width:100%; opacity:.18;}
+}
+@media (max-width: 760px){
+/* Final outro · single column */
+  .final-grid{grid-template-columns:1fr !important;}
+}
 </style>
 </head>
 
@@ -1973,15 +2088,33 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
   </section>
 
   <!-- 8 · FINAL CTA · production component -->
-<section class="final">   <!--
-  CtaBlock — page-body component. Never place inside a layout slot —
-  Footer is owned by MarketingLayout (cf. footer-duplicate fix commit 60f5b91).
---><section class="bg-[#0F0F12] text-[color:var(--color-paper)] pb-sp-24"><div class="container">   <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-[60px] items-center"> <div class="flex flex-col items-start text-left min-w-0"> <h2 class="font-display font-bold tracking-[-0.04em] leading-[1] mb-sp-5 text-[clamp(36px,4vw,56px)] text-[color:var(--color-paper)]">Bring your cloud.</h2> <p class="text-[16px] leading-[1.55] max-w-[460px] mb-sp-7 text-[color:var(--color-paper)]">Read-only connect. First findings in under five minutes.</p> <p class="text-[16px] leading-[1.55] max-w-[460px] mb-sp-7 text-[#B8B0A0]"> Connect a cloud account, read-only. First findings in under five minutes, surfaced on your live cross-cloud inventory. Or pick the product that matches where you are today. </p> <div class="flex flex-wrap gap-sp-3"> <a class="btn btn-primary" href="/signin">Get recommendations →</a><a class="btn btn-secondary" href="/contact">Talk to platform sales →</a> </div> <div class="mt-sp-8 w-full grid grid-cols-1 md:grid-cols-3 gap-sp-5"> <div class="flex flex-col gap-1 pt-sp-4 border-t border-[rgba(240,235,219,.18)]"> <strong class="block font-mono font-semibold text-[18px] tracking-[-0.01em] text-[#F0EBDB]">5 min</strong> <span class="text-[13px] leading-[1.45] tracking-[0.05em] text-[rgba(240,235,219,.78)]">first findings on your live inventory</span> </div><div class="flex flex-col gap-1 pt-sp-4 border-t border-[rgba(240,235,219,.18)]"> <strong class="block font-mono font-semibold text-[18px] tracking-[-0.01em] text-[#F0EBDB]">0</strong> <span class="text-[13px] leading-[1.45] tracking-[0.05em] text-[rgba(240,235,219,.78)]">production write actions during the PoC</span> </div><div class="flex flex-col gap-1 pt-sp-4 border-t border-[rgba(240,235,219,.18)]"> <strong class="block font-mono font-semibold text-[18px] tracking-[-0.01em] text-[#F0EBDB]">read-only</strong> <span class="text-[13px] leading-[1.45] tracking-[0.05em] text-[rgba(240,235,219,.78)]">cloud account connection for the full trial</span> </div> </div> </div> <div aria-hidden="true"></div> </div>  </div></section> <div aria-hidden="true" style="display:contents"> <astro-island uid="12Xlim" prefix="r9" component-url="/_astro/TetrisCanvasIsland.BZjuOMl1.js" component-export="default" renderer-url="/_astro/client.bnjHR3qd.js" props="{}" ssr="" client="idle" opts="{&quot;name&quot;:&quot;TetrisCanvasIsland&quot;,&quot;value&quot;:true}" await-children=""><canvas id="tet-canvas" aria-hidden="true"></canvas><!--astro:end--></astro-island> </div>  </section>
-</main>
+<section class="final">
+  <div class="container">
+    <div class="final-grid">
+      <div>
+        <div class="final-eyebrow">end &middot; ready when you are</div>
+        <h2>Bring your cloud.</h2>
+        <p class="final-tag">Read-only connect. First findings in under five minutes.</p>
+        <p>Connect a cloud account, read-only. First findings in under five minutes, surfaced on your live cross-cloud inventory. Or pick the product that matches where you are today.</p>
+        <div class="final-cta">
+          <a class="btn btn-primary" href="/signin">Get recommendations &rarr;</a>
+          <a class="btn btn-secondary" href="/contact">Talk to platform sales &rarr;</a>
+        </div>
+        <div class="final-stats final-stats--inline">
+          <div><strong>5 min</strong>first findings on your live inventory</div>
+          <div><strong>0</strong>production write actions during the PoC</div>
+          <div><strong>read-only</strong>cloud account connection for the full trial</div>
+        </div>
+      </div>
+      <div class="final-aside" aria-hidden="true"></div>
+    </div>
+  </div>
+  <canvas id="tet-canvas" aria-hidden="true"></canvas>
+</section>
 
 <footer data-astro-transition-persist="footer"><div class="container"><div class="foot-grid foot-grid--equal"><div class="foot-col"><h3>product</h3><ul><li><a href="/zopnight">Zopnight</a></li><li><a href="/zopday">Zopday</a></li><li><a href="/zopcloud">Zopcloud</a></li><li><a href="/k8s-view">Kubernetes View</a></li><li><a href="/integrations">Integrations</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/walkthrough">Walkthrough</a></li></ul></div><div class="foot-col"><h3>solutions</h3><ul><li><a href="/solutions">Use cases by industry</a></li><li><a href="/devops-hub">DevOps hub</a></li><li><a href="/platform-engineering-hub">Platform engineering</a></li><li><a href="/services">Services</a></li></ul></div><div class="foot-col"><h3>resources</h3><ul><li><a href="/resources/blogs">Blog</a></li><li><a href="/resources/ebooks">Ebooks</a></li><li><a href="/resources/university">University</a></li><li><a href="/what-is-devops">What is DevOps</a></li><li><a href="/ci-cd-best-practices">CI/CD best practices</a></li><li><a href="/cdcr-whitepaper">CDCR whitepaper</a></li><li><a href="/developers">Developers</a></li><li><a href="/changelog">Changelog</a></li></ul></div><div class="foot-col"><h3>company</h3><ul><li><a href="/about">About</a></li><li><a href="/media-kit">Media Kit</a></li><li><a href="/contact">Contact</a></li><li><a href="https://bookings.zop.dev/#/discover-zopdev" target="_blank" rel="noopener noreferrer" aria-label="Demo (opens in a new tab)">Demo</a></li><li><a href="/status">Status</a></li><li><a href="/trust">Trust</a></li></ul></div></div><!-- ════════════════════════════════════════════════════════════
            FOOTER BOTTOM PANEL · ZopDev wordmark left · world map right
-           ════════════════════════════════════════════════════════════ --><!-- COMPLIANCE BADGES · SOC 2 + ISO white badges before logo + globe --><div class="foot-globe"><div class="foot-globe-left"><a href="/" class="foot-globe-mark" aria-label="zopdev"><svg class="foot-globe-logo" viewBox="0 0 715 276" aria-hidden="true"><use href="#logo-zopdev"></use></svg></a><div class="foot-globe-badges" aria-label="Compliance certifications"><span class="foot-globe-badge" aria-label="SOC 2 Type II"><svg viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M32 8 a24 24 0 0 1 24 24 v6 a24 24 0 0 1 -24 24 a24 24 0 0 1 -24 -24 v-6 a24 24 0 0 1 24 -24 z" fill="none" stroke="currentColor" stroke-width="1" opacity=".5"></path><path d="M22 32 l8 8 l14 -16" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="square" stroke-linejoin="miter"></path></svg><span class="foot-globe-badge-label"><strong>SOC 2</strong> Type II</span></span><span class="foot-globe-badge" aria-label="ISO 27001:2022"><svg viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="11" y="11" width="42" height="42" fill="none" stroke="currentColor" stroke-width="1" opacity=".5"></rect><text x="32" y="29" font-family="Space Grotesk, monospace" font-size="9" fill="currentColor" text-anchor="middle" letter-spacing="2">ISO</text><text x="32" y="42" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="currentColor" text-anchor="middle">27001</text><line x1="14" y1="50" x2="50" y2="50" stroke="currentColor" stroke-width="1"></line></svg><span class="foot-globe-badge-label"><strong>ISO 27001</strong> 2022</span></span></div><div class="foot-globe-aws-group"><span class="foot-globe-aws-label" aria-hidden="true">Available on</span><a class="foot-globe-aws" href="https://aws.amazon.com/marketplace/pp/prodview-f7anqsweiahwm" target="_blank" rel="noopener noreferrer" aria-label="View zopdev on AWS Marketplace (opens in a new tab)"><img src="/logo-aws-marketplace.svg" alt="AWS Marketplace" width="194" height="34" loading="lazy" decoding="async"></a></div></div><div class="foot-globe-right min-w-0"><div class="foot-regions-v2" id="foot-regions-v2"><canvas id="foot-regions-map"></canvas></div><astro-island uid="Z1TAiR4" prefix="r6" component-url="/_astro/FooterGlobe.B3WCmj3M.js" component-export="default" renderer-url="/_astro/client.bnjHR3qd.js" props="{}" ssr="" client="idle" opts="{&quot;name&quot;:&quot;FooterGlobe&quot;,&quot;value&quot;:true}"></astro-island></div></div><div class="foot-bottom foot-bottom-3"><div class="foot-copy">© <span data-year="">2026</span> zopdev · <a href="/legal/privacy-policy">privacy</a> · <a href="/legal/website-terms-of-service">terms</a> · <a href="/legal/refund-policy">refunds</a></div><div class="foot-mid">made with <svg viewBox="0 0 7 6" aria-hidden="true"><rect x="1" y="0" width="1" height="1"></rect><rect x="2" y="0" width="1" height="1"></rect><rect x="4" y="0" width="1" height="1"></rect><rect x="5" y="0" width="1" height="1"></rect><rect x="0" y="1" width="7" height="1"></rect><rect x="0" y="2" width="7" height="1"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg> by zopdev</div><div class="foot-social"><a href="https://linkedin.com/company/zopdev" class="foot-social-icon" aria-label="zopdev on LinkedIn" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg></a><a href="https://twitter.com/zopdev" class="foot-social-icon" aria-label="zopdev on X (Twitter)" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></a><a href="https://github.com/zopdev" class="foot-social-icon" aria-label="zopdev on GitHub" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.598 24 12.297c0-6.627-5.373-12-12-12"></path></svg></a></div></div></div></footer>
+           ════════════════════════════════════════════════════════════ --><!-- COMPLIANCE BADGES · SOC 2 + ISO white badges before logo + globe --><div class="foot-globe"><div class="foot-globe-left"><a href="/" class="foot-globe-mark" aria-label="zopdev"><svg class="foot-globe-logo" viewBox="0 0 715 276" aria-hidden="true"><use href="#logo-zopdev"></use></svg></a><div class="foot-globe-badges" aria-label="Compliance certifications"><span class="foot-globe-badge" aria-label="SOC 2 Type II"><svg viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M32 8 a24 24 0 0 1 24 24 v6 a24 24 0 0 1 -24 24 a24 24 0 0 1 -24 -24 v-6 a24 24 0 0 1 24 -24 z" fill="none" stroke="currentColor" stroke-width="1" opacity=".5"></path><path d="M22 32 l8 8 l14 -16" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="square" stroke-linejoin="miter"></path></svg><span class="foot-globe-badge-label"><strong>SOC 2</strong> Type II</span></span><span class="foot-globe-badge" aria-label="ISO 27001:2022"><svg viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="11" y="11" width="42" height="42" fill="none" stroke="currentColor" stroke-width="1" opacity=".5"></rect><text x="32" y="29" font-family="Space Grotesk, monospace" font-size="9" fill="currentColor" text-anchor="middle" letter-spacing="2">ISO</text><text x="32" y="42" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="currentColor" text-anchor="middle">27001</text><line x1="14" y1="50" x2="50" y2="50" stroke="currentColor" stroke-width="1"></line></svg><span class="foot-globe-badge-label"><strong>ISO 27001</strong> 2022</span></span></div><div class="foot-globe-aws-group"><span class="foot-globe-aws-label" aria-hidden="true">Available on</span><a class="foot-globe-aws" href="https://aws.amazon.com/marketplace/pp/prodview-f7anqsweiahwm" target="_blank" rel="noopener noreferrer" aria-label="View zopdev on AWS Marketplace (opens in a new tab)"><img src="/logo-aws-marketplace.svg" alt="AWS Marketplace" width="194" height="34" loading="lazy" decoding="async"></a></div></div><div class="foot-globe-right min-w-0"><div class="foot-regions-v2" id="foot-regions-v2"><canvas id="foot-regions-map"></canvas></div></div></div><div class="foot-bottom foot-bottom-3"><div class="foot-copy">© <span data-year="">2026</span> zopdev · <a href="/legal/privacy-policy">privacy</a> · <a href="/legal/website-terms-of-service">terms</a> · <a href="/legal/refund-policy">refunds</a></div><div class="foot-mid">made with <svg viewBox="0 0 7 6" aria-hidden="true"><rect x="1" y="0" width="1" height="1"></rect><rect x="2" y="0" width="1" height="1"></rect><rect x="4" y="0" width="1" height="1"></rect><rect x="5" y="0" width="1" height="1"></rect><rect x="0" y="1" width="7" height="1"></rect><rect x="0" y="2" width="7" height="1"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg> by zopdev</div><div class="foot-social"><a href="https://linkedin.com/company/zopdev" class="foot-social-icon" aria-label="zopdev on LinkedIn" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg></a><a href="https://twitter.com/zopdev" class="foot-social-icon" aria-label="zopdev on X (Twitter)" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></a><a href="https://github.com/zopdev" class="foot-social-icon" aria-label="zopdev on GitHub" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.598 24 12.297c0-6.627-5.373-12-12-12"></path></svg></a></div></div></div></footer>
 
 <script>
 /* Copy. Reads data-copy rather than the DOM so the decorative "$" is never
@@ -2171,6 +2304,452 @@ document.querySelectorAll('.cmd-copy').forEach(function (btn) {
 </script>
 
 
+
+<script>
+/* Tetris, the CTA's own animation, lifted verbatim from the shipped
+   homepage. It paints into the transparent canvas over the right of the
+   section, so the copy keeps the left and nothing is layered over text. */
+(function(){
+  var canvas = document.getElementById('tet-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var SIZE = 44;                          // enlarged blocks
+  var COLS = 1, ROWS = 1;                 // recomputed in resize()
+  var grid = [];
+
+  function resetGrid(){
+    grid = Array.from({length:ROWS}, function(){ return Array(COLS).fill(0); });
+  }
+  function resize(){
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.clientWidth;
+    var h = canvas.clientHeight;
+    if(w<=0 || h<=0) return;
+    COLS = Math.max(3, Math.floor(w / SIZE));
+    ROWS = Math.max(6, Math.floor(h / SIZE));
+    canvas.width  = COLS * SIZE * dpr;
+    canvas.height = ROWS * SIZE * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    resetGrid();
+    active = null;
+  }
+
+  // Brand palette · keys map to fill colors
+  var COLORS = {
+    1:'#2A4494', // ZopDev blue
+    2:'#F58549', // ZopDev orange
+    3:'#7FB236' // ZopDev green
+  };
+
+  // Tetrominoes, 4x4 matrices, 1=filled
+  var SHAPES = [
+    // I
+    [[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+     [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]]],
+    // O
+    [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]]],
+    // T
+    [[[0,0,0,0],[1,1,1,0],[0,1,0,0],[0,0,0,0]],
+     [[0,1,0,0],[1,1,0,0],[0,1,0,0],[0,0,0,0]],
+     [[0,1,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+     [[0,1,0,0],[0,1,1,0],[0,1,0,0],[0,0,0,0]]],
+    // L
+    [[[1,0,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+     [[1,1,0,0],[1,0,0,0],[1,0,0,0],[0,0,0,0]],
+     [[1,1,1,0],[0,0,1,0],[0,0,0,0],[0,0,0,0]],
+     [[0,1,0,0],[0,1,0,0],[1,1,0,0],[0,0,0,0]]],
+    // J
+    [[[0,0,1,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+     [[1,0,0,0],[1,0,0,0],[1,1,0,0],[0,0,0,0]],
+     [[1,1,1,0],[1,0,0,0],[0,0,0,0],[0,0,0,0]],
+     [[1,1,0,0],[0,1,0,0],[0,1,0,0],[0,0,0,0]]],
+    // S
+    [[[0,1,1,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]],
+     [[1,0,0,0],[1,1,0,0],[0,1,0,0],[0,0,0,0]]],
+    // Z
+    [[[1,1,0,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]],
+     [[0,1,0,0],[1,1,0,0],[1,0,0,0],[0,0,0,0]]]
+  ];
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shapeAt(s, r, c, gx, gy){
+    return s[r] && s[r][c] && (gx>=0 && gx<COLS && gy<ROWS && (gy<0 || grid[gy][gx]===0));
+  }
+  function collides(shape, x, y){
+    for(var r=0;r<4;r++) for(var c=0;c<4;c++){
+      if(!shape[r][c]) continue;
+      var gx=x+c, gy=y+r;
+      if(gx<0||gx>=COLS||gy>=ROWS) return true;
+      if(gy>=0 && grid[gy][gx]) return true;
+    }
+    return false;
+  }
+  function merge(shape, x, y, color){
+    for(var r=0;r<4;r++) for(var c=0;c<4;c++){
+      if(shape[r][c] && y+r>=0) grid[y+r][x+c] = color;
+    }
+  }
+  function clearLines(){
+    var cleared = 0;
+    for(var r=ROWS-1; r>=0; r--){
+      if(grid[r].every(function(v){return v!==0;})){
+        grid.splice(r,1);
+        grid.unshift(Array(COLS).fill(0));
+        cleared++; r++;
+      }
+    }
+    return cleared;
+  }
+  function draw(active){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // settled blocks · flat fill, no highlights, no gridlines
+    for(var r=0;r<ROWS;r++) for(var c=0;c<COLS;c++){
+      if(grid[r][c]){
+        ctx.fillStyle = COLORS[grid[r][c]];
+        ctx.fillRect(c*SIZE, r*SIZE, SIZE, SIZE);
+      }
+    }
+    // active piece · flat fill
+    if(active){
+      ctx.fillStyle = COLORS[active.color];
+      for(var rr=0;rr<4;rr++) for(var cc=0;cc<4;cc++){
+        if(active.shape[rr][cc]){
+          var gx=active.x+cc, gy=active.y+rr;
+          if(gy>=0) ctx.fillRect(gx*SIZE, gy*SIZE, SIZE, SIZE);
+        }
+      }
+    }
+  }
+
+  var active = null;
+  var totalLines = 0;
+
+  function spawn(){
+    var rotations = pick(SHAPES);
+    var shape = pick(rotations);
+    // pick a column where the piece will land lowest (greedy heuristic, very simple)
+    var bestX = 0, bestY = -2;
+    var tries = 5;
+    for(var t=0;t<tries;t++){
+      var x = Math.floor(Math.random()*(COLS-2));
+      var y = -2;
+      while(!collides(shape, x, y+1)) y++;
+      if(y>bestY){ bestY = y; bestX = x; }
+    }
+    var color = 1 + Math.floor(Math.random()*3); // mostly blue/orange/green, ink rare
+    active = { shape:shape, x:bestX, y:-2, color:color, targetY:bestY };
+  }
+
+  function tick(){
+    if(!active){ spawn(); }
+    if(!collides(active.shape, active.x, active.y+1)){
+      active.y++;
+    } else {
+      merge(active.shape, active.x, active.y, active.color);
+      var cleared = clearLines();
+      if(cleared) totalLines += cleared;
+      // if the stack reached the top, reset (loop forever)
+      if(grid[1].some(function(v){return v!==0;})){
+        // dramatic reset · clear with a soft fade
+        grid = Array.from({length:ROWS}, function(){ return Array(COLS).fill(0); });
+      }
+      active = null;
+    }
+    draw(active);
+  }
+
+  resize();
+  window.addEventListener('resize', function(){
+    clearTimeout(window.__tetResize);
+    window.__tetResize = setTimeout(resize, 120);
+  });
+  draw(null);
+  setInterval(tick, 240);
+})();
+</script>
+
+<script>
+/* The footer regions map, also verbatim. Without it the footer canvas is
+   an empty box: the markup shipped with this page, the renderer did not. */
+(function(){
+  var canvas = document.getElementById('foot-regions-map');
+  var container = document.getElementById('foot-regions-v2');
+  if(!canvas || !container) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, dpr = Math.min(2, window.devicePixelRatio||1);
+
+  var lands = [
+    [60,71,-168,-141],[54,60,-165,-150],[56,61,-156,-140],
+    [60,72,-141,-95],[60,74,-95,-62],[50,70,-130,-62],[68,82,-110,-62],[72,80,-90,-75],
+    [40,60,-128,-95],[32,49,-124,-95],[32,49,-95,-75],
+    [30,45,-85,-68],[25,31,-85,-80],[25,30,-82,-80],
+    [23,32,-117,-97],[17,24,-107,-87],[14,19,-92,-83],[8,15,-87,-77],[7,12,-84,-77],
+    [17,23,-85,-74],[17,20,-77,-66],[17,19,-72,-68],
+    [60,83,-55,-18],[72,83,-45,-20],
+    [8,12,-77,-60],[0,8,-80,-50],[-10,0,-80,-35],[-20,-10,-74,-35],
+    [-30,-20,-72,-40],[-40,-30,-73,-53],[-45,-40,-74,-64],[-55,-45,-75,-65],
+    [-12,-2,-48,-35],[-20,-12,-50,-37],
+    [36,44,-10,3],[42,51,-5,8],[50,55,-5,10],[50,55,-10,-5],[51,58,-7,2],[54,59,-8,-2],[43,51,-2,8],
+    [55,71,4,31],[60,71,15,32],[54,61,8,30],
+    [45,60,10,40],[48,56,30,50],[55,67,30,60],
+    [40,47,7,18],[37,41,12,18],[38,46,13,29],[35,40,20,28],
+    [50,72,40,95],[55,72,60,120],[55,72,95,140],[60,72,120,170],
+    [36,42,26,45],[30,40,34,50],[25,37,35,48],[25,33,42,55],[12,26,34,55],[13,30,42,60],
+    [30,40,45,63],[36,45,50,75],[40,50,46,80],
+    [8,35,68,90],[20,35,70,88],[8,22,74,82],[22,30,88,93],
+    [10,28,92,108],[5,22,95,110],[8,22,100,110],
+    [22,45,85,122],[30,50,85,125],[42,54,88,127],[35,54,100,135],[33,43,124,131],
+    [31,36,129,136],[34,42,135,142],[41,46,139,146],[33,35,132,134],
+    [-8,6,95,106],[-8,2,100,119],[-5,7,105,127],[-10,0,113,141],[-10,-2,118,141],
+    [5,19,118,127],[8,19,120,126],
+    [20,37,-17,12],[20,35,12,36],[15,32,-17,35],[5,18,-17,15],[4,12,-10,12],
+    [-6,8,10,32],[-6,5,10,42],[-12,5,28,52],[3,13,40,52],
+    [-35,-15,12,35],[-35,-20,15,32],[-30,-22,15,32],[-26,-12,43,50],
+    [-39,-10,113,154],[-38,-28,115,154],[-28,-10,120,145],[-20,-10,130,145],
+    [-44,-39,144,149],[-47,-34,166,179],[-41,-34,172,179],[-47,-41,165,176],
+    [-10,-1,130,151],[63,67,-24,-13],[50,59,-6,2],[6,10,79,82],[19,23,-85,-74]
+  ];
+  function isLand(lat, lon){
+    for(var i=0;i<lands.length;i++){
+      var l=lands[i];
+      if(lat>=l[0]&&lat<=l[1]&&lon>=l[2]&&lon<=l[3]) return true;
+    }
+    return false;
+  }
+
+  /* Internal region list · used as arc targets when ghost is locked.
+     NOT rendered as pins · only the dots and the click-arc are visible. */
+  var regions = [
+    {lat:38.9,  lon:-77.0},
+    {lat:45.5,  lon:-122.7},
+    {lat:-23.5, lon:-46.6},
+    {lat:51.5,  lon:-0.12},
+    {lat:50.1,  lon:11.5},
+    {lat:26.0,  lon:50.5},
+    {lat:19.1,  lon:75},
+    {lat:1.35,  lon:103.8},
+    {lat:35.7,  lon:139.7},
+    {lat:-33.9, lon:151.2}
+  ];
+
+  function project(lat, lon){
+    return { x: (lon + 180) / 360 * W, y: (78 - lat) / 150 * H };
+  }
+  function dotColor(alpha){ return 'rgba(240,235,219,'+alpha+')'; }
+
+  function resize(){
+    var r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    buildLandDots();
+  }
+
+  var DOT_STEP = 2.2, DOT_R = 1.0, DOT_A = 0.30;
+  var SPOT_R = 95, SPOT_R2 = SPOT_R * SPOT_R;
+  var MAX_PUSH = 9, LERP = 0.14;
+  var dotCount = 0;
+  var baseX, baseY, curX, curY;
+
+  function buildLandDots(){
+    var arr = [];
+    for(var lat=78; lat>-75; lat-=DOT_STEP){
+      for(var lon=-180; lon<=180; lon+=DOT_STEP){
+        if(!isLand(lat, lon)) continue;
+        var p = project(lat, lon);
+        arr.push(p.x, p.y);
+      }
+    }
+    dotCount = arr.length / 2;
+    baseX = new Float32Array(dotCount); baseY = new Float32Array(dotCount);
+    curX  = new Float32Array(dotCount); curY  = new Float32Array(dotCount);
+    for(var i=0;i<dotCount;i++){
+      baseX[i] = arr[i*2]; baseY[i] = arr[i*2+1];
+      curX[i]  = baseX[i]; curY[i]  = baseY[i];
+    }
+  }
+
+  var mx = -9999, my = -9999;
+
+  function renderDots(){
+    var hasCursor = mx > -1000;
+    ctx.beginPath();
+    for(var i=0;i<dotCount;i++){
+      var bx = baseX[i], by = baseY[i];
+      var tx = bx, ty = by;
+      if(hasCursor){
+        var dx = bx - mx, dy = by - my;
+        var dist2 = dx*dx + dy*dy;
+        if(dist2 < SPOT_R2){
+          var dist = Math.sqrt(dist2) || 0.0001;
+          var t = 1 - dist / SPOT_R;
+          var s = t * t * (3 - 2 * t);
+          var push = s * MAX_PUSH;
+          tx = bx + (dx / dist) * push;
+          ty = by + (dy / dist) * push;
+        }
+      }
+      curX[i] += (tx - curX[i]) * LERP;
+      curY[i] += (ty - curY[i]) * LERP;
+      ctx.moveTo(curX[i] + DOT_R, curY[i]);
+      ctx.arc(curX[i], curY[i], DOT_R, 0, Math.PI*2);
+    }
+    ctx.fillStyle = dotColor(DOT_A);
+    ctx.fill();
+  }
+
+  /* Quadratic-bezier helper for arcs */
+  function qBezier(pa, ctrl, pb, t){
+    var it = 1 - t;
+    return {
+      x: it*it*pa.x + 2*it*t*ctrl.x + t*t*pb.x,
+      y: it*it*pa.y + 2*it*t*ctrl.y + t*t*pb.y
+    };
+  }
+
+  /* Transient arcs · fired when ghost is locked, fade out over 1.6s */
+  var transientArcs = [];
+
+  function drawTransientArcs(tNow){
+    if(!transientArcs.length) return;
+    for(var i=transientArcs.length - 1; i>=0; i--){
+      var a = transientArcs[i];
+      var u = (tNow - a.start) / a.life;
+      if(u < 0) continue;
+      if(u >= 1){ transientArcs.splice(i, 1); continue; }
+      var grow = u < 0.4 ? (u / 0.4) : 1;
+      var fade = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1;
+      ctx.strokeStyle = a.color; ctx.globalAlpha = 0.7 * fade;
+      ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+      ctx.lineDashOffset = -tNow * 30;
+      ctx.beginPath(); ctx.moveTo(a.pa.x, a.pa.y);
+      var STEPS = 24;
+      for(var s=1; s<=STEPS * grow; s++){
+        var t = s / STEPS;
+        var p = qBezier(a.pa, a.ctrl, a.pb, t);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+      var headT = Math.min(1, u * 1.6);
+      var head = qBezier(a.pa, a.ctrl, a.pb, headT);
+      ctx.fillStyle = a.color; ctx.globalAlpha = fade * 0.95;
+      ctx.beginPath(); ctx.arc(head.x, head.y, 3.2, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function frame(){
+    var tNow = performance.now() * 0.001;
+    ctx.clearRect(0, 0, W, H);
+    renderDots();
+    drawTransientArcs(tNow);
+    requestAnimationFrame(frame);
+  }
+
+  /* ─── Drop-a-pin · "+ deploy here" follows the cursor anywhere on land
+     and is clickable any number of times. No dwell delay, no lock-out. ─── */
+  var ghostEl = null;
+  var ghostX = 0, ghostY = 0;
+
+  function ensureGhost(){
+    if(ghostEl) return ghostEl;
+    ghostEl = document.createElement('div');
+    ghostEl.className = 'region-ghost';
+    ghostEl.innerHTML = '<span class="region-ghost-dot"></span><span class="region-ghost-label">+ deploy here</span>';
+    ghostEl.style.cursor = 'pointer';
+    ghostEl.style.pointerEvents = 'auto';
+    ghostEl.addEventListener('click', fireArcs);
+    container.appendChild(ghostEl);
+    return ghostEl;
+  }
+  function showGhost(x, y){
+    var g = ensureGhost();
+    g.style.left = x + 'px'; g.style.top = y + 'px';
+    g.classList.add('show');
+    ghostX = x; ghostY = y;
+  }
+  function hideGhost(){
+    if(ghostEl) ghostEl.classList.remove('show');
+  }
+  function onCursorMove(){
+    /* Show / move the ghost immediately whenever the cursor is over land. */
+    var lon = mx / W * 360 - 180;
+    var lat = 78 - my / H * 150;
+    if(!isLand(lat, lon)){
+      hideGhost();
+      return;
+    }
+    showGhost(mx, my);
+  }
+  function fireArcs(e){
+    if(e){ e.stopPropagation(); }
+    if(!ghostEl) return;
+    /* Brief click-feedback flash · ghost stays visible & re-clickable */
+    ghostEl.classList.add('flash');
+    setTimeout(function(){
+      if(ghostEl) ghostEl.classList.remove('flash');
+    }, 360);
+    /* Fan arcs to the 3 nearest hidden regions from this click point */
+    var picks = [];
+    for(var i = 0; i < regions.length; i++){
+      var p = project(regions[i].lat, regions[i].lon);
+      var dx = p.x - ghostX, dy = p.y - ghostY;
+      picks.push({ p: p, d2: dx*dx + dy*dy });
+    }
+    picks.sort(function(a, b){ return a.d2 - b.d2; });
+    var palette = ['#F58549', '#2A4494', '#7FB236'];
+    var now = performance.now() * 0.001;
+    for(var k = 0; k < Math.min(3, picks.length); k++){
+      var pa = { x: ghostX, y: ghostY };
+      var pb = picks[k].p;
+      var midX = (pa.x + pb.x) / 2;
+      var midY = (pa.y + pb.y) / 2 - Math.abs(pb.x - pa.x) * 0.18;
+      transientArcs.push({
+        pa: pa, pb: pb, ctrl: { x: midX, y: midY },
+        start: now + k * 0.12, life: 1.6,
+        color: palette[k % palette.length]
+      });
+    }
+  }
+
+  container.addEventListener('mousemove', function(e){
+    var r = canvas.getBoundingClientRect();
+    mx = e.clientX - r.left;
+    my = e.clientY - r.top;
+    onCursorMove();
+  });
+  container.addEventListener('mouseleave', function(){
+    mx = -9999; my = -9999;
+    hideGhost();
+  });
+  container.addEventListener('touchmove', function(e){
+    if(!e.touches.length) return;
+    var r = canvas.getBoundingClientRect();
+    mx = e.touches[0].clientX - r.left;
+    my = e.touches[0].clientY - r.top;
+  }, {passive:true});
+
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+(function(){
+    document.querySelectorAll('[data-year]').forEach(function(el){ el.textContent = new Date().getFullYear(); });
+    var ann = document.getElementById('ann-bar');
+    var btn = document.getElementById('ann-close');
+    if(!ann || !btn) return;
+    var key = 'zop-ann-2026-mcp';
+    try{ if(localStorage.getItem(key) === '1') ann.style.display = 'none'; }catch(e){}
+    btn.addEventListener('click', function(){
+      ann.style.display = 'none';
+      try{ localStorage.setItem(key, '1'); }catch(e){}
+    });
+  })();
+</script>
 
 <script>
 /* Proof carousel. Auto-advances until the reader touches it, then stops for
