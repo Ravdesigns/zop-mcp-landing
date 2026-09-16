@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zop MCP — Ask your cloud what changed</title>
+<title>Zop MCP · Ask your cloud what changed</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -250,7 +250,7 @@ ul{margin:0;padding:0;list-style:none}
 .hero-clients svg{width:16px;height:16px;color:var(--ink-4);flex:none}
 .hero-clients span{font-size:13px;color:var(--ink-3)}
 
-.hero-right{display:flex;flex-direction:column;gap:12px}
+.hero-right{display:flex;flex-direction:column;gap:12px;min-width:0}
 
 /* ===========================================================================
    2 · STATEMENT BAND
@@ -315,8 +315,8 @@ ul{margin:0;padding:0;list-style:none}
   color:var(--ink-4);background:var(--bg-2);
   transition:color 200ms var(--ease),background 200ms var(--ease);
 }
-.rail button[aria-selected="false"]{color:var(--ink);border-left-color:var(--zop-blue);background:var(--bg-1)}
-.rail button[aria-selected="false"] .n{color:var(--bg-0);background:var(--zop-blue)}
+.rail button[aria-selected="true"]{color:var(--ink);border-left-color:var(--zop-blue);background:var(--bg-1)}
+.rail button[aria-selected="true"] .n{color:var(--ink);background:var(--zop-blue)}
 
 /* --- the stack ---------------------------------------------------------- */
 .how-stack{display:flex;flex-direction:column}
@@ -382,7 +382,7 @@ ul{margin:0;padding:0;list-style:none}
   /* Stacking needs a tall viewport to read. Below the split the cards simply
      follow one another, which is the honest fallback. */
   .rail{position:static}
-  .how-panel{position:static;grid-template-columns:1fr;min-height:0}
+  .how-panel{position:static;grid-template-columns:1fr;min-height:0;margin-bottom:0}
   .how-panel + .how-panel{margin-top:16px}
   .stagefield{border-right:0;border-bottom:1px solid var(--line);padding:24px}
   .how-copy{padding:26px 22px}
@@ -883,7 +883,7 @@ footer:not(.site-foot){padding:56px 0 28px}
 .foot-bottom-3 .foot-social{display:inline-flex;gap:8px;justify-content:flex-end;align-items:center}
 .foot-bottom-3 a{color:inherit;border-bottom:1px solid var(--line);padding-bottom:1px}
 .foot-bottom-3 a:hover{color:var(--zop-orange);border-bottom-color:var(--zop-orange)}
-.foot-bottom-3 .foot-social-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:0;border-bottom:0;padding:0;color:var(--g-500);border-radius:6px;transition:color .18s var(--ease-out, ease-out),background .18s var(--ease-out, ease-out)}
+.foot-bottom-3 .foot-social-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:0;border-bottom:0;padding:0;color:var(--g-500);transition:color .18s var(--ease-out, ease-out),background .18s var(--ease-out, ease-out)}
 .foot-bottom-3 .foot-social-icon:hover,.foot-bottom-3 .foot-social-icon:focus-visible{color:var(--zop-orange);background:#f5854914}
 .foot-bottom-3 .foot-social-icon svg{width:18px;height:18px;display:block;flex-shrink:0}
 .foot-bottom-3 .foot-mid svg{width:11px;height:11px;display:inline-block;vertical-align:middle;flex-shrink:0;fill:var(--zop-orange);animation:foot-heart-pulse 1.8s ease-in-out infinite}
@@ -1246,7 +1246,7 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
 @media (max-width:900px){
   :root{--air:84px;--air-hero:68px;--gutter:20px}
   .nav-links{display:none}
-  .hero{grid-template-columns:1fr;gap:40px}
+  .hero{grid-template-columns:minmax(0,1fr);gap:40px}
   .hero-clients{margin-top:38px}
   .foot-in{grid-template-columns:1fr 1fr;gap:28px}
 }
@@ -3696,7 +3696,7 @@ html[data-theme="dark"] .nav:not([data-over]),
   <!-- 4 · FEATURES -->
   <section class="how">
     <div class="wrap">
-      <p class="how-eyebrow"><span aria-hidden="true"></span>Best in class</p>
+      <p class="how-eyebrow"><span aria-hidden="true"></span>What it does</p>
       <h2>Four things nobody else<br>puts in one place.</h2>
 
       <div class="how-grid">
@@ -3930,6 +3930,8 @@ html[data-theme="dark"] .nav:not([data-over]),
   </div>
   <canvas id="tet-canvas" aria-hidden="true"></canvas>
 </section>
+
+</main>
 
 <footer>
   <div class="container">
@@ -4534,7 +4536,6 @@ document.querySelectorAll('.cmd-copy').forEach(function (btn) {
     ctx.clearRect(0, 0, W, H);
     renderDots();
     drawTransientArcs(tNow);
-    requestAnimationFrame(frame);
   }
 
   /* ─── Drop-a-pin · "+ deploy here" follows the cursor anywhere on land
@@ -4620,9 +4621,24 @@ document.querySelectorAll('.cmd-copy').forEach(function (btn) {
     my = e.touches[0].clientY - r.top;
   }, {passive:true});
 
+  /* The map is decorative and sits at the very bottom of a long page, so it
+     has no business painting while it is off screen or the tab is hidden.
+     Both gates flip the same flag, and the loop restarts from wherever it
+     left off rather than re-initialising. */
+  var awake = false, rafId = 0;
+  function tick(){ if(!awake){ rafId = 0; return; } frame(); rafId = requestAnimationFrame(tick); }
+  function wake(){ if(awake || document.hidden) return; awake = true; if(!rafId) rafId = requestAnimationFrame(tick); }
+  function sleep(){ awake = false; if(rafId){ cancelAnimationFrame(rafId); rafId = 0; } }
+
   resize();
   window.addEventListener('resize', resize);
-  requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange', function(){ document.hidden ? sleep() : wake(); });
+  if (typeof IntersectionObserver === 'function') {
+    new IntersectionObserver(function(es){ es[0].isIntersecting ? wake() : sleep(); },
+                             {rootMargin:'200px'}).observe(canvas);
+  } else {
+    wake();
+  }
 })();
 </script>
 
