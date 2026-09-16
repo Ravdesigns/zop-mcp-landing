@@ -355,7 +355,7 @@ ul{margin:0;padding:0;list-style:none}
    and the dark mock panel still reads against it. A fourth hue would have meant
    adding to a palette that is deliberately closed. */
 .stagefield{
-  padding:34px;display:grid;
+  padding:34px;display:grid;place-items:center;
   border-right:1px solid var(--line);
 }
 .how-panel[data-panel="1"] .stagefield{background:var(--zop-blue)}
@@ -365,7 +365,12 @@ ul{margin:0;padding:0;list-style:none}
 /* The illustration is the field. No inner plate: a dark rectangle floating on
    a coloured one is two objects where the design wants one, and the field is
    already the frame. */
-.stagefield canvas{display:block;width:100%;height:100%;min-height:300px}
+/* Bounded on purpose. The field stretches to whichever column is taller, so an
+   unbounded height:100% lets each of these canvases grow with it; there are six
+   canvases on this page, and past a certain total the compositor drops one and
+   paints a blank box where the drawing was. A cap also keeps the drawings a
+   readable size instead of stretching them down a very tall panel. */
+.stagefield canvas{display:block;width:100%;height:100%;min-height:280px;max-height:440px}
 
 .how-copy{padding:36px 34px;display:flex;flex-direction:column;justify-content:center}
 .how-num{
