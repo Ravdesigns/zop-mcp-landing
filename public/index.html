@@ -42,6 +42,10 @@
      -------------------------------------------------------------------- */
   --air: 140px;
   --air-hero: 40px;
+  /* The nav is fixed, so it takes no space in the flow and the hero has to
+     reserve its height explicitly. Without this the headline starts at y=40
+     under a 71px bar and loses its ascenders behind it. */
+  --nav-h: 71px;
   --w-display: 300;
   --lh-display: 1.0;
 
@@ -220,7 +224,7 @@ ul{margin:0;padding:0;list-style:none}
 .hero{
   display:grid;grid-template-columns:1.28fr 0.72fr;
   gap:56px;align-items:center;
-  padding:var(--air-hero) 0;
+  padding:calc(var(--nav-h) + 32px) 0 var(--air-hero);
 }
 .hero h1{
   font-size:var(--t-display);
@@ -464,7 +468,10 @@ ul{margin:0;padding:0;list-style:none}
   .bento-grid{grid-template-columns:1fr;gap:16px;margin-top:40px}
   
   .bcard-body{padding:26px 22px}
-  .bcard-vis{padding:0 22px 22px}
+  /* One column, so the shot sits square and at its natural height. The fixed
+     296px window exists to crop a leaning, oversized frame on desktop; here it
+     just left a few hundred pixels of dead card under the screenshot. */
+  .bcard-vis{padding:0 22px 22px;height:auto}
 }
 
 /* ===========================================================================
@@ -3027,6 +3034,30 @@ html[data-theme="light"] .np-cell-icon{background:#F0EBDB !important;
   width: 0 !important;
   height: 0 !important;}
 
+
+
+/* ---------------------------------------------------------------------------
+   TOUCH TARGETS
+
+   On a coarse pointer these controls are all correct visually and all too small
+   to hit: the copy button is 27px, the carousel arrows 34px, and its dots are a
+   3px bar by design. Each grows its hit area with padding rather than its ink,
+   so nothing about the layout changes; background-clip keeps the dot a 3px bar
+   while the box around it reaches 44px.
+   --------------------------------------------------------------------------- */
+@media (pointer:coarse){
+  .cmd-copy{min-width:44px;min-height:44px;padding:14px;margin:-8px}
+  .pcar-nav button{width:44px;height:44px}
+  .pcar-dots{gap:0}
+  .pcar-dots button{
+    width:44px;height:44px;
+    padding:20px 9px;
+    background-clip:content-box;
+  }
+  .foot-col li a{display:inline-block;padding:12px 0}
+  .foot-copy a{display:inline-block;padding:12px 2px}
+  .foot-social a{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+}
 
 /* ---------------------------------------------------------------------------
    FROSTED NAV OVER THE HERO
