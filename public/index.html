@@ -224,7 +224,7 @@ ul{margin:0;padding:0;list-style:none}
 .hero{
   display:grid;grid-template-columns:1.28fr 0.72fr;
   gap:56px;align-items:center;
-  padding:calc(var(--nav-h) + 32px) 0 var(--air-hero);
+  padding:var(--nav-h) 0 0;
 }
 .hero h1{
   font-size:var(--t-display);
@@ -1282,7 +1282,17 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
 /* The hero keeps its own ink ground now that the footage no longer covers it.
    Without this the left 70% would fall back to --bg-0, which is white in light
    mode, and every hero element here is deliberately forced to the dark palette. */
-.herowrap{position:relative;overflow:hidden;isolation:isolate;background:#0F0F12}
+/* The opening fold fills the screen. svh rather than vh so a phone's collapsing
+   address bar cannot make the hero taller than the window it is measured
+   against, which is what produces the classic "scrolls a few pixels for no
+   reason" bug. The nav is fixed and sits on top, so the hero centres in the
+   space below it rather than under it. */
+.herowrap{
+  position:relative;overflow:hidden;isolation:isolate;background:#0F0F12;
+  min-height:100svh;
+  display:flex;align-items:center;
+}
+.herowrap > .wrap{width:100%}
 
 /* Video cropped to the right 30%, sitting behind the command block rather than
    under the whole fold. object-fit:cover means the clip re-crops to the narrow
