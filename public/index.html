@@ -364,28 +364,20 @@ ul{margin:0;padding:0;list-style:none}
 /* ===========================================================================
    2 - THE PRODUCT, RUNNING
 
-   A single uncut take under the fold. The frame is wider than the text column
-   and stops short of the viewport edge, so the recording reads as a held shot
-   rather than a background: full-bleed footage competes with the hero video
-   above it, and this section is meant to be looked at, not felt.
+   The take opens the section with nothing in front of it. The eight steps sit
+   underneath, so the page shows the product before it explains it.
+
+   Each step carries a figure, because a workflow told only in verbs is a
+   brochure. Every figure here already appears elsewhere on this page or in the
+   recording itself; not one of them was written for this section.
    =========================================================================== */
 .reel{padding:var(--air) 0}
-.reel-say{
-  margin-top:20px;font-size:var(--t-lead);line-height:1.55;
-  color:var(--ink-3);max-width:52ch;
-}
-.reel-frame{
-  position:relative;
-  margin:48px auto 0;
-  max-width:1180px;
-  padding:0 var(--gutter);
-}
+.reel-frame{position:relative;margin:0 auto;max-width:1180px;padding:0 var(--gutter)}
 .reel-frame video{
   display:block;width:100%;height:auto;
-  background:#0B0B0E;
-  border:1px solid var(--line);
+  background:#0B0B0E;border:1px solid var(--line);
 }
-/* The control sits inside the frame's padding so it never covers the footage. */
+/* Sits inside the frame's padding so it never covers the footage. */
 .reel-toggle{
   position:absolute;right:calc(var(--gutter) + 14px);bottom:14px;
   width:40px;height:40px;
@@ -401,22 +393,34 @@ ul{margin:0;padding:0;list-style:none}
 .reel-toggle:active{transform:scale(.97)}
 .reel-toggle svg{width:15px;height:15px}
 
-.reel-steps{
-  margin:26px auto 0;max-width:1180px;padding:0 var(--gutter);
-  font-family:var(--display);font-size:13px;letter-spacing:.01em;
-  color:var(--ink-4);
+/* Eight steps, four across. A hairline grid rather than eight cards: this is
+   one sequence, and boxing each step would make it read as eight products. */
+.flow{
+  list-style:none;margin:72px 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--line);border:1px solid var(--line);
 }
-.reel-steps b{
-  font-weight:500;color:var(--ink-2);
-  font-variant-numeric:tabular-nums;margin-right:4px;
+.flow li{background:var(--bg-0);padding:26px 24px 24px;display:flex;flex-direction:column}
+.flow .fl-n{
+  margin:0;font-family:var(--display);font-size:11px;letter-spacing:.14em;
+  color:var(--ink-4);font-variant-numeric:tabular-nums;
 }
-@media (max-width:900px){
-  .reel-frame{margin-top:34px}
-  .reel-toggle{opacity:1}
+.flow h3{
+  margin:12px 0 0;font-family:var(--display);font-size:17px;font-weight:500;
+  letter-spacing:-.02em;color:var(--ink);
 }
-@media (prefers-reduced-motion:reduce){
-  .reel-toggle{transition:none}
+.flow .fl-d{margin:9px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-3)}
+.flow .fl-f{margin:auto 0 0;padding-top:20px;display:flex;flex-direction:column;gap:3px}
+.flow .fl-f b{
+  font-family:var(--display);font-size:19px;font-weight:500;letter-spacing:-.02em;
+  color:var(--ink-2);font-variant-numeric:tabular-nums;
 }
+.flow .fl-f span{font-size:11.5px;line-height:1.45;color:var(--ink-4)}
+
+@media (max-width:1100px){ .flow{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:900px){ .flow{margin-top:44px} .reel-toggle{opacity:1} }
+@media (max-width:560px){ .flow{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .reel-toggle{transition:none} }
 
 /* ===========================================================================
    2 · STATEMENT BAND
@@ -3824,27 +3828,46 @@ html[data-theme="dark"] .nav:not([data-over]),
        recording is the real playground, so what a reader sees here is exactly
        what they get when they click through. -->
   <section class="reel">
-    <div class="wrap">
-      <p class="how-eyebrow"><span aria-hidden="true"></span>Watch it work</p>
-      <h2 style="margin-top:28px;font-size:var(--t-h2);line-height:1.08;letter-spacing:-.03em;max-width:22ch">Set the conditions once.<br>It watches from there.</h2>
-      <p class="reel-say">A watch policy on idle UAT databases, built end to end in the playground, and the recommendation it produces. No sign-in, no cloud account, nothing persists.</p>
-    </div>
-
+    <!-- No heading above the take. The recording is the argument; a title and a
+         paragraph in front of it only delay the thing they describe. The steps
+         underneath carry the reading, after the watching. -->
     <div class="reel-frame">
       <video id="reel" poster="assets/zn-watch.jpg" autoplay muted loop playsinline preload="none"
              aria-label="A ZopNight walkthrough: opening the playground, building a watch policy on idle UAT databases, and the recommendations it produces.">
         <source src="assets/zn-watch.mp4" type="video/mp4">
       </video>
-      <!-- Auto-playing footage that runs past five seconds has to be stoppable
-           (WCAG 2.2.2). The control is quiet until the frame is hovered or the
-           button itself is focused, so it never competes with the recording. -->
       <button class="reel-toggle" type="button" data-reel aria-label="Pause the walkthrough">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><rect x="7" y="5" width="3.6" height="14"/><rect x="13.4" y="5" width="3.6" height="14"/></svg>
       </button>
     </div>
 
     <div class="wrap">
-      <p class="reel-steps"><b>01</b> Pick an industry in the playground <span aria-hidden="true">&rarr;</span> <b>02</b> Scope the policy to resource type and tag <span aria-hidden="true">&rarr;</span> <b>03</b> Read the outcome it recommends</p>
+      <ol class="flow">
+        <li><p class="fl-n">01</p><h3>Connect</h3>
+          <p class="fl-d">Point it at a cloud account. Nothing is installed, nothing runs in your cluster.</p>
+          <p class="fl-f"><b>Read-only</b><span>how every account starts</span></p></li>
+        <li><p class="fl-n">02</p><h3>Inventory</h3>
+          <p class="fl-d">Everything you are running, across every account, in one searchable list.</p>
+          <p class="fl-f"><b>550K+</b><span>resources tracked since launch</span></p></li>
+        <li><p class="fl-n">03</p><h3>Architecture</h3>
+          <p class="fl-d">A live topology built from what the APIs return, not a diagram drawn last quarter.</p>
+          <p class="fl-f"><b>Continuous</b><span>refreshed, not snapshotted</span></p></li>
+        <li><p class="fl-n">04</p><h3>Recommendations</h3>
+          <p class="fl-d">Findings from your own bill and your own tags, ranked by what they actually save.</p>
+          <p class="fl-f"><b>$30M+</b><span>annualised spend under management</span></p></li>
+        <li><p class="fl-n">05</p><h3>Watch policies</h3>
+          <p class="fl-d">Set the conditions once. Signals are evaluated over a rolling window, not on a hunch.</p>
+          <p class="fl-f"><b>Hourly</b><span>evaluation while the window rolls</span></p></li>
+        <li><p class="fl-n">06</p><h3>Schedules</h3>
+          <p class="fl-d">Non-prod off when nobody is using it, in dependency order and the right timezone.</p>
+          <p class="fl-f"><b>81</b><span>schedules running daily at one customer</span></p></li>
+        <li><p class="fl-n">07</p><h3>Approval</h3>
+          <p class="fl-d">Writes are opt-in per organisation, scoped service by service and gated on an admin.</p>
+          <p class="fl-f"><b>Irreversible</b><span>labelled before anyone picks it</span></p></li>
+        <li><p class="fl-n">08</p><h3>Showback</h3>
+          <p class="fl-d">Cost split by team, so the conversation about cutting it happens with whoever owns it.</p>
+          <p class="fl-f"><b>220M+</b><span>data points processed monthly</span></p></li>
+      </ol>
     </div>
   </section>
 
