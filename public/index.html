@@ -393,63 +393,46 @@ ul{margin:0;padding:0;list-style:none}
 .reel-toggle:active{transform:scale(.97)}
 .reel-toggle svg{width:15px;height:15px}
 
-/* Eight steps, four across. A hairline grid rather than eight cards: this is
-   one sequence, and boxing each step would make it read as eight products. */
-.flow{
-  list-style:none;margin:72px 0 0;padding:0;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:1px;background:var(--line);border:1px solid var(--line);
+/* Chapters, as a strip directly under the frame.
+
+   Tight to the video on purpose: these are a control for it, not a section of
+   their own, and a gap would make them read as content about the video rather
+   than part of it. Label only. The timestamp and the sentence each one used to
+   carry were describing a frame the reader can simply look at. */
+.chapters{
+  max-width:1180px;margin:0 auto;padding:0 var(--gutter);
+  display:flex;gap:0;
+  overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity;
 }
-.flow li{background:var(--bg-0);padding:26px 24px 24px;display:flex;flex-direction:column}
-.flow .fl-n{
-  margin:0;font-family:var(--display);font-size:11px;letter-spacing:.14em;
+.chapters::-webkit-scrollbar{display:none}
+.ch{
+  flex:1 0 auto;scroll-snap-align:start;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 16px;
+  background:none;border:0;border-bottom:1px solid var(--line);
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:-.01em;
+  color:var(--ink-4);white-space:nowrap;cursor:pointer;
+  transition:color 160ms var(--e-out),border-color 160ms var(--e-out);
+}
+.ch-n{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
   color:var(--ink-4);font-variant-numeric:tabular-nums;
+  transition:color 160ms var(--e-out);
 }
-.flow .fl-n{display:block}
-.flow .fl-d{display:block;margin:9px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-3)}
-.flow .fl-f{margin:auto 0 0;padding-top:20px;display:flex;flex-direction:column;gap:3px}
-.flow .fl-f b{
-  font-family:var(--display);font-size:19px;font-weight:500;letter-spacing:-.02em;
-  color:var(--ink-2);font-variant-numeric:tabular-nums;
-}
-.flow .fl-f span{font-size:11.5px;line-height:1.45;color:var(--ink-4)}
+.ch:hover{color:var(--ink-2);border-bottom-color:var(--ink-4)}
+.ch[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--zop-orange)}
+.ch[aria-selected="true"] .ch-n{color:var(--zop-orange)}
+.ch:focus-visible{outline:2px solid var(--zop-orange);outline-offset:-2px}
 
-
-/* The whole step is the target, not a link buried in it: a small "learn more"
-   inside a cell this size is a worse hit area than the cell itself. */
-.flow li{padding:0}
-.flow .fl-go{
-  display:flex;flex-direction:column;height:100%;width:100%;
-  padding:26px 24px 24px;position:relative;
-  background:none;border:0;text-align:left;font:inherit;color:inherit;
-  cursor:pointer;
-  transition:background 180ms var(--e-out);
+@media (max-width:900px){
+  .reel-toggle{opacity:1}
+  .ch{flex:0 0 auto;padding:12px 14px}
 }
-.flow .fl-go:hover{background:var(--bg-1)}
-.flow .fl-go:focus-visible{outline:2px solid var(--zop-orange);outline-offset:-2px}
-/* The chapter the footage is actually in. A left rule rather than a fill, so
-   the marker survives on a cell that is also being hovered. */
-.flow .fl-go[aria-pressed="true"]{background:var(--bg-1)}
-.flow .fl-go[aria-pressed="true"]::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--zop-orange);
-}
-.flow .fl-go[aria-pressed="true"] .fl-h{color:var(--ink)}
-.flow .fl-go[aria-pressed="true"] .fl-f b{color:var(--zop-orange)}
-.flow .fl-h{
-  display:block;margin:12px 0 0;
-  font-family:var(--display);font-size:17px;font-weight:500;
-  letter-spacing:-.02em;color:var(--ink-2);
-  transition:color 180ms var(--e-out);
-}
-.flow .fl-go:hover .fl-h{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){
-  .flow .fl-go,.flow .fl-arrow{transition:none}
+  .reel-toggle,.ch,.ch-n{transition:none}
 }
-@media (max-width:1100px){ .flow{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:900px){ .flow{margin-top:44px} .reel-toggle{opacity:1} }
-@media (max-width:560px){ .flow{grid-template-columns:1fr} }
-@media (prefers-reduced-motion:reduce){ .reel-toggle{transition:none} }
 
 /* ===========================================================================
    2 · STATEMENT BAND
@@ -3878,17 +3861,15 @@ html[data-theme="dark"] .nav:not([data-over]),
       </button>
     </div>
 
-    <div class="wrap">
-      <ol class="flow" aria-label="Chapters of the walkthrough">
-        <li><button class="fl-go" type="button" data-t="0" aria-pressed="true"><span class="fl-n">01</span><span class="fl-h">Playground</span><span class="fl-d">Pick an industry. Realistic sample data, no sign-in, nothing persists.</span><span class="fl-f"><b>0:00</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="8" aria-pressed="false"><span class="fl-n">02</span><span class="fl-h">Policies</span><span class="fl-d">Every policy watches a set of resources on chosen metrics, evaluated hourly over a rolling window.</span><span class="fl-f"><b>0:08</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="16" aria-pressed="false"><span class="fl-n">03</span><span class="fl-h">Name it</span><span class="fl-d">Name the policy, or paste a prompt and let the assistant fill the whole thing in.</span><span class="fl-f"><b>0:16</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="22" aria-pressed="false"><span class="fl-n">04</span><span class="fl-h">Scope</span><span class="fl-d">Which resources to watch. Start broad, then narrow by resource type, tag or account.</span><span class="fl-f"><b>0:22</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="28" aria-pressed="false"><span class="fl-n">05</span><span class="fl-h">Signals</span><span class="fl-d">The metric conditions, combined into a single decision: A and B, or C.</span><span class="fl-f"><b>0:28</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="32" aria-pressed="false"><span class="fl-n">06</span><span class="fl-h">Outcome</span><span class="fl-d">What it raises when the signals fire, at what severity, and where it routes.</span><span class="fl-f"><b>0:32</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="38" aria-pressed="false"><span class="fl-n">07</span><span class="fl-h">Review</span><span class="fl-d">The policy in plain English, with how many resources match and how many would trigger today.</span><span class="fl-f"><b>0:38</b><span>jump to this step</span></span></button></li>
-        <li><button class="fl-go" type="button" data-t="44" aria-pressed="false"><span class="fl-n">08</span><span class="fl-h">Running</span><span class="fl-d">Back in the list, watching, with the outcome it recommends against each one.</span><span class="fl-f"><b>0:44</b><span>jump to this step</span></span></button></li>
-      </ol>
+    <div class="chapters" role="tablist" aria-label="Chapters of the walkthrough">
+      <button class="ch" type="button" role="tab" data-t="0" aria-selected="true"><span class="ch-n">01</span>Playground</button>
+      <button class="ch" type="button" role="tab" data-t="8" aria-selected="false"><span class="ch-n">02</span>Policies</button>
+      <button class="ch" type="button" role="tab" data-t="16" aria-selected="false"><span class="ch-n">03</span>Name it</button>
+      <button class="ch" type="button" role="tab" data-t="22" aria-selected="false"><span class="ch-n">04</span>Scope</button>
+      <button class="ch" type="button" role="tab" data-t="28" aria-selected="false"><span class="ch-n">05</span>Signals</button>
+      <button class="ch" type="button" role="tab" data-t="32" aria-selected="false"><span class="ch-n">06</span>Outcome</button>
+      <button class="ch" type="button" role="tab" data-t="38" aria-selected="false"><span class="ch-n">07</span>Review</button>
+      <button class="ch" type="button" role="tab" data-t="44" aria-selected="false"><span class="ch-n">08</span>Running</button>
     </div>
   </section>
 
@@ -8959,13 +8940,13 @@ document.addEventListener('astro:page-load', function(){
    you are. Chapter boundaries are read off the recording itself, not guessed. */
 (function () {
   var v = document.getElementById('reel');
-  var steps = [].slice.call(document.querySelectorAll('.flow .fl-go'));
+  var steps = [].slice.call(document.querySelectorAll('.chapters .ch'));
   if (!v || !steps.length) return;
 
   var marks = steps.map(function (b) { return +b.dataset.t; });
 
   function mark(i) {
-    steps.forEach(function (b, n) { b.setAttribute('aria-pressed', n === i ? 'true' : 'false'); });
+    steps.forEach(function (b, n) { b.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
   }
   function currentChapter(t) {
     var i = 0;
