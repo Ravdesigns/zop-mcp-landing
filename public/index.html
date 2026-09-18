@@ -46,6 +46,10 @@
      reserve its height explicitly. Without this the headline starts at y=40
      under a 71px bar and loses its ascenders behind it. */
   --nav-h: 71px;
+  /* How much of the take shows above the fold. The hero gives this up so the
+     next section is visibly there: a fold that ends exactly on a boundary
+     reads as the end of the page to anyone who does not scroll on spec. */
+  --peek: clamp(44px, 5vw, 76px);
   --w-display: 300;
   --lh-display: 1.0;
 
@@ -229,32 +233,12 @@ ul{margin:0;padding:0;list-style:none}
 @keyframes sweep{to{--sweep:360deg}}
 
 
-/* The magnet's light.
+/* The command block keeps its 1px ring, which leans toward the pointer. An
+   aura behind it was tried and removed: a soft blob over the hero footage read
+   as a smudge rather than as light, and its bounding box showed as a hard
+   rectangle wherever the falloff had not reached zero by the edge. */
+.hero-right{position:relative}
 
-   Lives on the wrapper, not the block, and paints behind it: .cmd has a solid
-   fill, so the aura is only ever seen spilling past its edges. That spill is
-   the effect. Confining the same gradient to the 1px ring, which is what the
-   first attempt did, can only ever draw a hairline.
-
-   No filter: blur anywhere. The softness is the radial falloff, which costs
-   nothing to animate because only the gradient's position and radii change. */
-.hero-right{position:relative;isolation:isolate}
-.hero-right::before{
-  content:'';position:absolute;
-  inset:-90px;
-  z-index:0;
-  pointer-events:none;
-  opacity:var(--pull, 0);
-  background:radial-gradient(
-    var(--gr-x, 200px) var(--gr-y, 200px) at var(--gx, 50%) var(--gy, 50%),
-    color-mix(in srgb, var(--zop-orange) 55%, transparent) 0%,
-    color-mix(in srgb, var(--zop-orange) 26%, transparent) 22%,
-    color-mix(in srgb, var(--zop-blue) 20%, transparent) 46%,
-    transparent 72%);
-}
-.hero-right > .cmd{position:relative;z-index:1}
-@media (hover:none),(pointer:coarse){ .hero-right::before{display:none} }
-@media (prefers-reduced-motion:reduce){ .hero-right::before{display:none} }
 
 /* The magnet itself.
 
@@ -371,7 +355,9 @@ ul{margin:0;padding:0;list-style:none}
    brochure. Every figure here already appears elsewhere on this page or in the
    recording itself; not one of them was written for this section.
    =========================================================================== */
-.reel{padding:var(--air) 0}
+/* No top padding: the hero already stops short by --peek, and any gap here
+   would put the frame back below the fold. */
+.reel{padding:0 0 var(--air)}
 .reel-frame{position:relative;margin:0 auto;max-width:1180px;padding:0 var(--gutter)}
 .reel-frame video{
   display:block;width:100%;height:auto;
@@ -1475,7 +1461,7 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
    space below it rather than under it. */
 .herowrap{
   position:relative;overflow:hidden;isolation:isolate;background:#0F0F12;
-  min-height:100svh;
+  min-height:calc(100svh - var(--peek));
   display:flex;align-items:center;
 }
 .herowrap > .wrap{width:100%}
@@ -8810,9 +8796,7 @@ document.addEventListener('astro:page-load', function(){
 (function () {
   var cmd = document.querySelector('.cmd');
   if (!cmd) return;
-  /* The aura is painted by .hero-right, the ring by .cmd, and both read the
-     same four values, so they are set on the common ancestor and inherit. */
-  var host = cmd.closest('.hero-right') || cmd;
+  var host = cmd;
   var fine = false, calm = false;
   try {
     fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -8831,7 +8815,7 @@ document.addEventListener('astro:page-load', function(){
   var px = null, py = null, onScreen = false, raf = 0, idle = 0, seeded = false;
 
   function measure() {
-    var r = host.getBoundingClientRect();
+    var r = cmd.getBoundingClientRect();
     if (px === null) { pullTo = 0; return r; }
     var lx = px - r.left, ly = py - r.top;
     /* distance to the box, not its centre, so a wide block pulls along its length */
