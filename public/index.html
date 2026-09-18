@@ -405,11 +405,8 @@ ul{margin:0;padding:0;list-style:none}
   margin:0;font-family:var(--display);font-size:11px;letter-spacing:.14em;
   color:var(--ink-4);font-variant-numeric:tabular-nums;
 }
-.flow h3{
-  margin:12px 0 0;font-family:var(--display);font-size:17px;font-weight:500;
-  letter-spacing:-.02em;color:var(--ink);
-}
-.flow .fl-d{margin:9px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-3)}
+.flow .fl-n{display:block}
+.flow .fl-d{display:block;margin:9px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-3)}
 .flow .fl-f{margin:auto 0 0;padding-top:20px;display:flex;flex-direction:column;gap:3px}
 .flow .fl-f b{
   font-family:var(--display);font-size:19px;font-weight:500;letter-spacing:-.02em;
@@ -417,6 +414,38 @@ ul{margin:0;padding:0;list-style:none}
 }
 .flow .fl-f span{font-size:11.5px;line-height:1.45;color:var(--ink-4)}
 
+
+/* The whole step is the target, not a link buried in it: a small "learn more"
+   inside a cell this size is a worse hit area than the cell itself. */
+.flow li{padding:0}
+.flow .fl-go{
+  display:flex;flex-direction:column;height:100%;width:100%;
+  padding:26px 24px 24px;position:relative;
+  background:none;border:0;text-align:left;font:inherit;color:inherit;
+  cursor:pointer;
+  transition:background 180ms var(--e-out);
+}
+.flow .fl-go:hover{background:var(--bg-1)}
+.flow .fl-go:focus-visible{outline:2px solid var(--zop-orange);outline-offset:-2px}
+/* The chapter the footage is actually in. A left rule rather than a fill, so
+   the marker survives on a cell that is also being hovered. */
+.flow .fl-go[aria-pressed="true"]{background:var(--bg-1)}
+.flow .fl-go[aria-pressed="true"]::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--zop-orange);
+}
+.flow .fl-go[aria-pressed="true"] .fl-h{color:var(--ink)}
+.flow .fl-go[aria-pressed="true"] .fl-f b{color:var(--zop-orange)}
+.flow .fl-h{
+  display:block;margin:12px 0 0;
+  font-family:var(--display);font-size:17px;font-weight:500;
+  letter-spacing:-.02em;color:var(--ink-2);
+  transition:color 180ms var(--e-out);
+}
+.flow .fl-go:hover .fl-h{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){
+  .flow .fl-go,.flow .fl-arrow{transition:none}
+}
 @media (max-width:1100px){ .flow{grid-template-columns:repeat(2,1fr)} }
 @media (max-width:900px){ .flow{margin-top:44px} .reel-toggle{opacity:1} }
 @media (max-width:560px){ .flow{grid-template-columns:1fr} }
@@ -446,13 +475,21 @@ ul{margin:0;padding:0;list-style:none}
    =========================================================================== */
 .how{padding:var(--air) 0}
 
+/* Taken from the shipped homepage verbatim (.feature .num in
+   homepage-chrome.css): mono at 11px, .1em tracking, and a 1px rule that runs
+   from the label to the edge of the container. Not a bordered box with a
+   coloured square, which is what this page had invented. */
 .how-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:8px 13px;border:1px solid var(--line);
-  font-family:var(--display);font-size:11px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  display:flex;align-items:center;
+  font-family:var(--mono);font-size:11px;font-weight:400;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--g-500,#707070);
+  padding:0;border:0;
 }
-.how-eyebrow span{width:7px;height:7px;background:var(--zop-orange);flex:none}
+.how-eyebrow::after{
+  content:'';flex:1;height:1px;background:var(--line);margin-left:16px;
+}
+/* The square the old chip carried has no counterpart on the site. */
+.how-eyebrow > span{display:none}
 
 .how h2{
   margin-top:28px;
@@ -3842,31 +3879,15 @@ html[data-theme="dark"] .nav:not([data-over]),
     </div>
 
     <div class="wrap">
-      <ol class="flow">
-        <li><p class="fl-n">01</p><h3>Connect</h3>
-          <p class="fl-d">Point it at a cloud account. Nothing is installed, nothing runs in your cluster.</p>
-          <p class="fl-f"><b>Read-only</b><span>how every account starts</span></p></li>
-        <li><p class="fl-n">02</p><h3>Inventory</h3>
-          <p class="fl-d">Everything you are running, across every account, in one searchable list.</p>
-          <p class="fl-f"><b>550K+</b><span>resources tracked since launch</span></p></li>
-        <li><p class="fl-n">03</p><h3>Architecture</h3>
-          <p class="fl-d">A live topology built from what the APIs return, not a diagram drawn last quarter.</p>
-          <p class="fl-f"><b>Continuous</b><span>refreshed, not snapshotted</span></p></li>
-        <li><p class="fl-n">04</p><h3>Recommendations</h3>
-          <p class="fl-d">Findings from your own bill and your own tags, ranked by what they actually save.</p>
-          <p class="fl-f"><b>$30M+</b><span>annualised spend under management</span></p></li>
-        <li><p class="fl-n">05</p><h3>Watch policies</h3>
-          <p class="fl-d">Set the conditions once. Signals are evaluated over a rolling window, not on a hunch.</p>
-          <p class="fl-f"><b>Hourly</b><span>evaluation while the window rolls</span></p></li>
-        <li><p class="fl-n">06</p><h3>Schedules</h3>
-          <p class="fl-d">Non-prod off when nobody is using it, in dependency order and the right timezone.</p>
-          <p class="fl-f"><b>81</b><span>schedules running daily at one customer</span></p></li>
-        <li><p class="fl-n">07</p><h3>Approval</h3>
-          <p class="fl-d">Writes are opt-in per organisation, scoped service by service and gated on an admin.</p>
-          <p class="fl-f"><b>Irreversible</b><span>labelled before anyone picks it</span></p></li>
-        <li><p class="fl-n">08</p><h3>Showback</h3>
-          <p class="fl-d">Cost split by team, so the conversation about cutting it happens with whoever owns it.</p>
-          <p class="fl-f"><b>220M+</b><span>data points processed monthly</span></p></li>
+      <ol class="flow" aria-label="Chapters of the walkthrough">
+        <li><button class="fl-go" type="button" data-t="0" aria-pressed="true"><span class="fl-n">01</span><span class="fl-h">Playground</span><span class="fl-d">Pick an industry. Realistic sample data, no sign-in, nothing persists.</span><span class="fl-f"><b>0:00</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="8" aria-pressed="false"><span class="fl-n">02</span><span class="fl-h">Policies</span><span class="fl-d">Every policy watches a set of resources on chosen metrics, evaluated hourly over a rolling window.</span><span class="fl-f"><b>0:08</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="16" aria-pressed="false"><span class="fl-n">03</span><span class="fl-h">Name it</span><span class="fl-d">Name the policy, or paste a prompt and let the assistant fill the whole thing in.</span><span class="fl-f"><b>0:16</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="22" aria-pressed="false"><span class="fl-n">04</span><span class="fl-h">Scope</span><span class="fl-d">Which resources to watch. Start broad, then narrow by resource type, tag or account.</span><span class="fl-f"><b>0:22</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="28" aria-pressed="false"><span class="fl-n">05</span><span class="fl-h">Signals</span><span class="fl-d">The metric conditions, combined into a single decision: A and B, or C.</span><span class="fl-f"><b>0:28</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="32" aria-pressed="false"><span class="fl-n">06</span><span class="fl-h">Outcome</span><span class="fl-d">What it raises when the signals fire, at what severity, and where it routes.</span><span class="fl-f"><b>0:32</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="38" aria-pressed="false"><span class="fl-n">07</span><span class="fl-h">Review</span><span class="fl-d">The policy in plain English, with how many resources match and how many would trigger today.</span><span class="fl-f"><b>0:38</b><span>jump to this step</span></span></button></li>
+        <li><button class="fl-go" type="button" data-t="44" aria-pressed="false"><span class="fl-n">08</span><span class="fl-h">Running</span><span class="fl-d">Back in the list, watching, with the outcome it recommends against each one.</span><span class="fl-f"><b>0:44</b><span>jump to this step</span></span></button></li>
       </ol>
     </div>
   </section>
@@ -8926,6 +8947,47 @@ document.addEventListener('astro:page-load', function(){
   } else { v.preload = 'auto'; }
 
   sync();
+})();
+</script>
+
+<script>
+/* The chapter list drives the footage. Clicking a step seeks the take to that
+   moment rather than navigating away, which is the only reading of "clickable"
+   that makes sense next to a video: the step and the frame are the same thing.
+
+   The marker also follows playback, so leaving it alone still tells you where
+   you are. Chapter boundaries are read off the recording itself, not guessed. */
+(function () {
+  var v = document.getElementById('reel');
+  var steps = [].slice.call(document.querySelectorAll('.flow .fl-go'));
+  if (!v || !steps.length) return;
+
+  var marks = steps.map(function (b) { return +b.dataset.t; });
+
+  function mark(i) {
+    steps.forEach(function (b, n) { b.setAttribute('aria-pressed', n === i ? 'true' : 'false'); });
+  }
+  function currentChapter(t) {
+    var i = 0;
+    for (var n = 0; n < marks.length; n++) if (t >= marks[n] - 0.25) i = n;
+    return i;
+  }
+
+  steps.forEach(function (btn, i) {
+    btn.addEventListener('click', function () {
+      try { v.currentTime = marks[i]; } catch (e) {}
+      mark(i);
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    });
+  });
+
+  /* Cheap enough to run on every tick, but the class only changes when the
+     chapter does, so there is no layout work per frame. */
+  var last = -1;
+  v.addEventListener('timeupdate', function () {
+    var i = currentChapter(v.currentTime);
+    if (i !== last) { last = i; mark(i); }
+  });
 })();
 </script>
 </body></html>
