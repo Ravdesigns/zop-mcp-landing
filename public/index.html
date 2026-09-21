@@ -156,11 +156,11 @@ ul{margin:0;padding:0;list-style:none}
    ship docs are named in text after a rule. Marking that difference is the
    point, rather than inventing two logos so the row looks uniform. */
 .hero-clients ul{flex-wrap:wrap;row-gap:12px}
-.hero-clients li.more{
-  padding-left:20px;margin-left:4px;
-  border-left:1px solid var(--line);
-  color:var(--ink-4);
-}
+/* Antigravity publishes no vector mark, only a favicon, so this one is a
+   48px raster shown at 16. It is also the only mark here in colour; the
+   other four are line art taking currentColor. Using the real thing and
+   letting it be the odd one out beats drawing a monochrome fake. */
+.hero-clients .cl-raster{width:16px;height:16px;flex:none;display:block}
 
 /* ---------- buttons ------------------------------------------------------- */
 /* Sharp corners, and the hard offset shadow the system mandates. Nothing here
@@ -390,9 +390,18 @@ ul{margin:0;padding:0;list-style:none}
   color:var(--ink-4);font-variant-numeric:tabular-nums;
   transition:color 160ms var(--e-out);
 }
+.ch{position:relative}
 .ch:hover{color:var(--ink-2);border-bottom-color:var(--ink-4)}
-.ch[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--zop-orange)}
+.ch[aria-selected="true"]{color:var(--ink)}
 .ch[aria-selected="true"] .ch-n{color:var(--zop-orange)}
+/* The marker is the scrubber. Its width is how far through the clip you are,
+   so one mark says both which capability is playing and how much is left,
+   instead of needing a separate bar. Width only, on a 2px strip. */
+.ch[aria-selected="true"]::after{
+  content:'';position:absolute;left:0;bottom:-1px;
+  height:2px;width:calc(var(--p, 0) * 100%);
+  background:var(--zop-orange);
+}
 .ch:focus-visible{outline:2px solid var(--zop-orange);outline-offset:-2px}
 
 @media (max-width:900px){
@@ -3786,7 +3795,7 @@ html[data-theme="dark"] .nav:not([data-over]),
             <li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"></path></svg><span>Cursor</span></li>
             <li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 9.9a5.8 5.8 0 0 0-.5-4.8 5.9 5.9 0 0 0-6.3-2.8A5.8 5.8 0 0 0 4.6 4.6a5.8 5.8 0 0 0-3.9 2.8 5.9 5.9 0 0 0 .7 6.9 5.8 5.8 0 0 0 .5 4.8 5.9 5.9 0 0 0 6.3 2.8 5.8 5.8 0 0 0 10.2-2.3 5.8 5.8 0 0 0 3.9-2.8 5.9 5.9 0 0 0-.7-6.9Zm-8.7 12.2a4.3 4.3 0 0 1-2.8-1l5.6-3.2a.9.9 0 0 0 .5-.8V9.2l2.4 1.4v5.5a4.4 4.4 0 0 1-5.7 6Zm-9.4-4a4.3 4.3 0 0 1-.5-2.9l5.6 3.2a.9.9 0 0 0 .9 0l5.8-3.3v2.7L9.9 21a4.4 4.4 0 0 1-6-1.6Zm-1.5-12a4.3 4.3 0 0 1 2.3-1.9v5.6a.9.9 0 0 0 .4.8l5.8 3.3-2.4 1.4-5.6-3.2a4.4 4.4 0 0 1-.5-6Zm16.5 3.8L13.2 6.6l2.4-1.4 5.6 3.2a4.4 4.4 0 0 1-.7 7.9v-5.6a.9.9 0 0 0-.4-.8Zm2.4-3.5-5.6-3.3a.9.9 0 0 0-.9 0L8.6 5.9V3.2A4.4 4.4 0 0 1 16.5 6l-.1.1Zm-12.6 4.7-2.4-1.4V8.2a4.4 4.4 0 0 1 7.2-3.4l-5.6 3.2a.9.9 0 0 0-.5.8Zm1.3-2.8L12 8.9l3.1 1.8v3.6L12 16.1l-3.1-1.8Z"></path></svg><span>Codex</span></li>
             <li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.55 5.067c-1.2038-.002-2.1806.973-2.1806 2.1765v4.8676c0 .972-.8035 1.7594-1.7597 1.7594-.568 0-1.1352-.286-1.4718-.7659l-4.9713-7.1003c-.4125-.5896-1.0837-.941-1.8103-.941-1.1334 0-2.1533.9635-2.1533 2.153v4.8957c0 .972-.7969 1.7594-1.7596 1.7594-.57 0-1.1363-.286-1.4728-.7658L.4076 5.1598C.2822 4.9798 0 5.0688 0 5.2882v4.2452c0 .2147.0656.4228.1884.599l5.4748 7.8183c.3234.462.8006.8052 1.3509.9298 1.3771.313 2.6446-.747 2.6446-2.0977v-4.893c0-.972.7875-1.7593 1.7596-1.7593h.003a1.798 1.798 0 0 1 1.4718.7658l4.9723 7.0994c.4135.5905 1.05.941 1.8093.941 1.1587 0 2.1515-.9645 2.1515-2.153v-4.8948c0-.972.7875-1.7594 1.7596-1.7594h.194a.22.22 0 0 0 .2204-.2202v-4.622a.22.22 0 0 0-.2203-.2203Z"/></svg><span>Windsurf</span></li>
-            <li class="more"><span>Antigravity too</span></li>
+            <li><img class="cl-raster" src="data:image/png;base64,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" alt="" width="16" height="16" loading="lazy" decoding="async"><span>Antigravity</span></li>
           </ul>
           <p class="hero-proof"><strong>$30M+</strong> annualised cloud spend under management <span aria-hidden="true">&middot;</span> <strong>550K+</strong> resources tracked</p>
         </div>
@@ -3822,23 +3831,29 @@ html[data-theme="dark"] .nav:not([data-over]),
          paragraph in front of it only delay the thing they describe. The steps
          underneath carry the reading, after the watching. -->
     <div class="reel-frame">
-      <video id="reel" poster="assets/zn-watch.jpg" autoplay muted loop playsinline preload="none"
-             aria-label="A ZopNight walkthrough: opening the playground, building a watch policy on idle UAT databases, and the recommendations it produces.">
-        <source src="assets/zn-watch.mp4" type="video/mp4">
+      <video id="reel" poster="assets/zn-infrastructure.jpg" autoplay muted loop playsinline preload="none"
+             aria-label="ZopNight and ZopDay in use. Pick a capability from the row beneath to play its walkthrough.">
       </video>
       <button class="reel-toggle" type="button" data-reel aria-label="Pause the walkthrough">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><rect x="7" y="5" width="3.6" height="14"/><rect x="13.4" y="5" width="3.6" height="14"/></svg>
       </button>
     </div>
 
-    <div class="chapters" role="tablist" aria-label="Building a watch policy">
-      <button class="ch" type="button" role="tab" data-t="8" aria-selected="true"><span class="ch-n">01</span>Start</button>
-      <button class="ch" type="button" role="tab" data-t="16" aria-selected="false"><span class="ch-n">02</span>Describe</button>
-      <button class="ch" type="button" role="tab" data-t="22" aria-selected="false"><span class="ch-n">03</span>Scope</button>
-      <button class="ch" type="button" role="tab" data-t="28" aria-selected="false"><span class="ch-n">04</span>Signals</button>
-      <button class="ch" type="button" role="tab" data-t="32" aria-selected="false"><span class="ch-n">05</span>Outcome</button>
-      <button class="ch" type="button" role="tab" data-t="38" aria-selected="false"><span class="ch-n">06</span>Review</button>
-      <button class="ch" type="button" role="tab" data-t="44" aria-selected="false"><span class="ch-n">07</span>Watching</button>
+    <div class="chapters" role="tablist" aria-label="What the product does">
+      <button class="ch" type="button" role="tab" aria-selected="true" title="Everything you are running, across every account"
+              data-src="assets/zn-infrastructure.mp4" data-poster="assets/zn-infrastructure.jpg"><span class="ch-n">01</span>Infrastructure</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Findings from your own bill, ranked by what they save"
+              data-src="assets/zn-recommendations.mp4" data-poster="assets/zn-recommendations.jpg"><span class="ch-n">02</span>Recommendations</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Non-prod off when nobody is using it"
+              data-src="assets/zn-scheduling.mp4" data-poster="assets/zn-scheduling.jpg"><span class="ch-n">03</span>Scheduling</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Capacity that follows the real tide of load"
+              data-src="assets/zn-auto-scale.mp4" data-poster="assets/zn-auto-scale.jpg"><span class="ch-n">04</span>Auto-scale</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Set the conditions once, it watches from there"
+              data-src="assets/zn-watch.mp4" data-poster="assets/zn-watch.jpg"><span class="ch-n">05</span>Watch policies</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Gaps surfaced before the traffic arrives"
+              data-src="assets/zn-event-readiness.mp4" data-poster="assets/zn-event-readiness.jpg"><span class="ch-n">06</span>Event readiness</button>
+      <button class="ch" type="button" role="tab" aria-selected="false" title="Push the repo, get a URL"
+              data-src="assets/zn-deploy.mp4" data-poster="assets/zn-deploy.jpg"><span class="ch-n">07</span>Deploy</button>
     </div>
   </section>
 
@@ -8869,43 +8884,44 @@ document.addEventListener('astro:page-load', function(){
 </script>
 
 <script>
-/* The chapter list drives the footage. Clicking a step seeks the take to that
-   moment rather than navigating away, which is the only reading of "clickable"
-   that makes sense next to a video: the step and the frame are the same thing.
+/* The row switches the footage and doubles as its scrubber.
 
-   The marker also follows playback, so leaving it alone still tells you where
-   you are. Chapter boundaries are read off the recording itself, not guessed. */
+   Each capability is its own recording, so a tab swaps the source rather than
+   seeking inside one file. Only the selected clip is ever fetched: seven of
+   them is 11MB, and nobody should pay for six they did not ask for.
+
+   The orange marker's width is the play position. One element does both jobs,
+   which is why there is no separate progress bar. */
 (function () {
   var v = document.getElementById('reel');
-  var steps = [].slice.call(document.querySelectorAll('.chapters .ch'));
-  if (!v || !steps.length) return;
+  var tabs = [].slice.call(document.querySelectorAll('.chapters .ch'));
+  if (!v || !tabs.length) return;
 
-  var marks = steps.map(function (b) { return +b.dataset.t; });
+  var current = -1;
 
-  function mark(i) {
-    steps.forEach(function (b, n) { b.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
+  function select(i, play) {
+    if (i === current) return;
+    current = i;
+    tabs.forEach(function (b, n) { b.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
+    var t = tabs[i];
+    t.style.setProperty('--p', 0);
+    v.poster = t.dataset.poster;
+    v.src = t.dataset.src;          /* fetched here, not before */
+    v.load();
+    if (play) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    try { t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {}
   }
-  function currentChapter(t) {
-    var i = 0;
-    for (var n = 0; n < marks.length; n++) if (t >= marks[n] - 0.25) i = n;
-    return i;
-  }
 
-  steps.forEach(function (btn, i) {
-    btn.addEventListener('click', function () {
-      try { v.currentTime = marks[i]; } catch (e) {}
-      mark(i);
-      var p = v.play(); if (p && p.catch) p.catch(function () {});
-    });
-  });
+  tabs.forEach(function (t, i) { t.addEventListener('click', function () { select(i, true); }); });
 
-  /* Cheap enough to run on every tick, but the class only changes when the
-     chapter does, so there is no layout work per frame. */
-  var last = -1;
   v.addEventListener('timeupdate', function () {
-    var i = currentChapter(v.currentTime);
-    if (i !== last) { last = i; mark(i); }
+    if (current < 0 || !v.duration) return;
+    tabs[current].style.setProperty('--p', (v.currentTime / v.duration).toFixed(4));
   });
+  /* A run of the whole row: when one finishes the next capability takes over. */
+  v.addEventListener('ended', function () { select((current + 1) % tabs.length, true); });
+
+  select(0, false);
 })();
 </script>
 </body></html>
