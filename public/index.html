@@ -50,6 +50,10 @@
      next section is visibly there: a fold that ends exactly on a boundary
      reads as the end of the page to anyone who does not scroll on spec. */
   --peek: clamp(44px, 5vw, 76px);
+  /* Air between the hero and the frame. The hero gives this up as well as the
+     peek, so the frame lands in the same place and the 10% still shows: the
+     gap is taken out of the fold above it, not added below it. */
+  --reel-gap: clamp(32px, 4vw, 56px);
   --w-display: 300;
   --lh-display: 1.0;
 
@@ -334,9 +338,9 @@ ul{margin:0;padding:0;list-style:none}
    brochure. Every figure here already appears elsewhere on this page or in the
    recording itself; not one of them was written for this section.
    =========================================================================== */
-/* No top padding: the hero already stops short by --peek, and any gap here
-   would put the frame back below the fold. */
-.reel{padding:0 0 var(--air)}
+/* The gap above the frame is paid for by the hero, which stops short by both
+   --peek and --reel-gap, so adding it here does not push the frame back down. */
+.reel{padding:var(--reel-gap) 0 var(--air)}
 .reel-frame{position:relative;margin:0 auto;max-width:1180px;padding:0 var(--gutter)}
 .reel-frame video{
   display:block;width:100%;height:auto;
@@ -1440,7 +1444,7 @@ html[data-theme=dark] .faq-list summary:hover{background:#ffffff0a}
    space below it rather than under it. */
 .herowrap{
   position:relative;overflow:hidden;isolation:isolate;background:#0F0F12;
-  min-height:calc(100svh - var(--peek));
+  min-height:calc(100svh - var(--peek) - var(--reel-gap));
   display:flex;align-items:center;
 }
 .herowrap > .wrap{width:100%}
