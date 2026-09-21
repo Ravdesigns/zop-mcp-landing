@@ -187,13 +187,10 @@ ul{margin:0;padding:0;list-style:none}
    in the hero. If you add another accent above the fold, take this one out.
    =========================================================================== */
 
-/* Both are set on .cmd and read by .cmd::before / .cmd::after, so both must
-   inherit: a registered property declared inherits:false never reaches the
-   pseudo-element, and the ring would sit frozen at its initial angle. */
+/* Set on .cmd and read by .cmd::before, so it has to inherit: a registered
+   property declared inherits:false never reaches the pseudo-element, and the
+   ring sits frozen at its initial angle. */
 @property --sweep{syntax:'<angle>';initial-value:0deg;inherits:true}
-/* How hard the ring is being pulled toward the pointer, 0 to 1. Registered so
-   it interpolates instead of stepping between frames. */
-@property --pull{syntax:'<number>';initial-value:0;inherits:true}
 
 .cmd{
   /* One row, everything on the same centre line: prompt, command, control.
@@ -227,7 +224,6 @@ ul{margin:0;padding:0;list-style:none}
   mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   mask-composite:exclude;
   pointer-events:none;z-index:1;
-  opacity:calc(.8 + var(--pull) * .2);
   animation:sweep 7s linear infinite;
 }
 @keyframes sweep{to{--sweep:360deg}}
@@ -251,24 +247,7 @@ ul{margin:0;padding:0;list-style:none}
    Softness comes from the gradient's own stops rather than filter: blur, which
    is banned system-wide and expensive to animate besides. Same 1px ring mask
    as the sweep underneath, so the light is confined to the border. */
-.cmd::after{
-  content:'';position:absolute;inset:-1px;padding:1px;
-  background:radial-gradient(
-    var(--gr-x, 130px) var(--gr-y, 130px) at var(--gx, 50%) var(--gy, 50%),
-    var(--zop-orange) 0%,
-    color-mix(in srgb, var(--zop-orange) 65%, transparent) 26%,
-    color-mix(in srgb, var(--zop-blue) 45%, transparent) 52%,
-    transparent 76%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  mask-composite:exclude;
-  pointer-events:none;z-index:2;
-  opacity:var(--pull);
-}
-/* No pointer to be pulled by, so the ring keeps its steady sweep alone. */
-@media (hover:none),(pointer:coarse){ .cmd::after{display:none} }
-@media (prefers-reduced-motion:reduce){ .cmd::after{display:none} }
+
 }
 
 
@@ -8774,94 +8753,59 @@ document.addEventListener('astro:page-load', function(){
 
 
 <script>
-/* Magnet glow on the command block.
+/* The ring leans toward the pointer.
 
-   The glow is not placed where the cursor is. It springs toward the cursor's
-   position, so it lags, arrives late and overshoots slightly. That lag is the
-   effect: a light that snapped to the pointer would read as tracking it, and
-   only a light that has to catch up reads as being pulled.
+   Only the angle moves. The gradient, the mask and the 1px width are the
+   shipped treatment untouched; this sets --sweep and nothing else. An earlier
+   pass added a second layer on top and it rendered as harsh colour segments on
+   the hairline, which is what a radial glow becomes when you mask it to 1px.
 
-   Two derived values do the rest. The ellipse stretches along whichever axis
-   the glow is currently travelling, which smears it in the direction of the
-   drag. And --pull fades the whole layer in by proximity, so the light gathers
-   as you approach and dissolves as you leave.
+   A spring rather than a direct binding, because a value that simply is
+   wherever the cursor is has no motion of its own and reads as mechanical.
+   Angles wrap, so it takes the shortest signed path: without that, crossing
+   0/360 sends the arc the long way round.
 
-   Coordinates are in px relative to the block and may sit outside it: the
-   gradient is masked to the 1px ring, so an off-box centre simply lights the
-   nearest stretch of border, which is what "pulled toward the cursor" looks
-   like from inside the frame.
-
-   The loop is gated on visibility and on the block being on screen, and parks
-   itself once the spring has settled and nothing is pulling. */
+   The gradient's bright core sits at 288deg inside its own space, so the angle
+   that puts it under the cursor is (bearing - 288). With no pointer near, it
+   free-runs at the speed of the 7s CSS sweep it takes over from. */
 (function () {
   var cmd = document.querySelector('.cmd');
   if (!cmd) return;
-  var host = cmd;
   var fine = false, calm = false;
   try {
     fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
     calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) {}
-  if (!fine || calm) return;
+  if (!fine || calm) return;   /* CSS keeps the plain sweep in both cases */
 
-  var REACH = 520;                    /* px at which the pull reaches zero */
-  var STIFF = 0.14, DAMP = 0.72;      /* looser than a UI spring: it should lag */
-  var BASE  = 230;                    /* resting glow radius, px */
-  var STRETCH = 11;                   /* px of radius per px/frame of speed */
+  var HEAD = 288, REACH = 520, STIFF = 0.075, DAMP = 0.78;
+  var IDLE = 360 / 7 / 60;
+  var angle = 0, vel = 0, target = 0;
+  var px = null, py = null, onScreen = false, raf = 0;
 
-  var gx = 0, gy = 0, vx = 0, vy = 0;   /* glow centre and its velocity */
-  var tx = 0, ty = 0;                   /* where it is being pulled to */
-  var pull = 0, pullTo = 0;
-  var px = null, py = null, onScreen = false, raf = 0, idle = 0, seeded = false;
-
-  function measure() {
-    var r = cmd.getBoundingClientRect();
-    if (px === null) { pullTo = 0; return r; }
-    var lx = px - r.left, ly = py - r.top;
-    /* distance to the box, not its centre, so a wide block pulls along its length */
-    var dx = Math.max(r.left - px, 0, px - r.right);
-    var dy = Math.max(r.top - py, 0, py - r.bottom);
-    var dist = Math.sqrt(dx * dx + dy * dy);
-    var t = Math.max(0, Math.min(1, 1 - dist / REACH));
-    pullTo = t * t * (3 - 2 * t);
-    tx = lx; ty = ly;
-    if (!seeded) { gx = lx; gy = ly; seeded = true; }
-    return r;
-  }
+  function wrap(d) { return ((d + 540) % 360) - 180; }
 
   function frame() {
     raf = 0;
-    var r = measure();
-
-    if (pullTo > 0.01) {
-      vx = (vx + (tx - gx) * STIFF) * DAMP;
-      vy = (vy + (ty - gy) * STIFF) * DAMP;
-      gx += vx; gy += vy;
-    } else {
-      /* released: drift the glow along the ring so the block is never dead */
-      idle += 0.012;
-      gx = r.width  * (0.5 + 0.55 * Math.cos(idle));
-      gy = r.height * (0.5 + 2.2  * Math.sin(idle));
-      vx *= 0.9; vy *= 0.9;
+    var near = false;
+    if (px !== null) {
+      var r = cmd.getBoundingClientRect();
+      var dx = px - (r.left + r.width / 2);
+      var dy = py - (r.top + r.height / 2);
+      near = Math.sqrt(dx * dx + dy * dy) < REACH;
+      if (near) target = Math.atan2(dx, -dy) * 180 / Math.PI - HEAD;
     }
-    pull += (pullTo - pull) * 0.08;
+    if (!near) target += IDLE;
 
-    /* stretch along the axis it is actually moving on */
-    var sx = BASE + Math.min(Math.abs(vx) * STRETCH, 180);
-    var sy = BASE + Math.min(Math.abs(vy) * STRETCH, 120);
-
-    host.style.setProperty('--gx', gx.toFixed(1) + 'px');
-    host.style.setProperty('--gy', gy.toFixed(1) + 'px');
-    host.style.setProperty('--gr-x', sx.toFixed(1) + 'px');
-    host.style.setProperty('--gr-y', sy.toFixed(1) + 'px');
-    host.style.setProperty('--pull', pull.toFixed(3));
-
+    vel = (vel + wrap(target - angle) * STIFF) * DAMP;
+    angle += vel;
+    cmd.style.setProperty('--sweep', angle.toFixed(2) + 'deg');
     if (onScreen) wake();
   }
   function wake() { if (!raf && onScreen && !document.hidden) raf = requestAnimationFrame(frame); }
 
   window.addEventListener('pointermove', function (e) { px = e.clientX; py = e.clientY; wake(); }, { passive: true });
-  window.addEventListener('pointerleave', function () { px = null; py = null; wake(); });
+  window.addEventListener('pointerleave', function () { px = null; py = null; });
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { if (raf) { cancelAnimationFrame(raf); raf = 0; } } else wake();
   });
@@ -8871,6 +8815,11 @@ document.addEventListener('astro:page-load', function(){
       if (onScreen) wake(); else if (raf) { cancelAnimationFrame(raf); raf = 0; }
     }, { rootMargin: '120px' }).observe(cmd);
   } else { onScreen = true; wake(); }
+
+  /* The CSS keyframes and this loop would fight over the same property. */
+  var kill = document.createElement('style');
+  kill.textContent = '.cmd::before{animation:none}';
+  document.head.appendChild(kill);
 })();
 </script>
 
